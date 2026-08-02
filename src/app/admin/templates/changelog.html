@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}Changelog — BitVelox{% endblock %}
+{% block content %}
+<h1>Changelog</h1>
+
+<div class="card changelog">
+  {{ changelog_html|safe }}
+</div>
+{% endblock %}

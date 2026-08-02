@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}BitVelox{% endblock %}</title>
+  <link rel="stylesheet" href="/static/admin/style.css">
+</head>
+<body>
+{% block body %}
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar-brand">BitVelox</div>
+    <nav class="sidebar-nav">
+      <a href="/" {% if nav_active == 'dashboard' %}class="active"{% endif %}>Dashboard</a>
+      <a href="/library" {% if nav_active == 'library' %}class="active"{% endif %}>Library</a>
+      <a href="/logout">Logout</a>
+    </nav>
+    <div class="sidebar-footer">
+      <a href="/changelog" class="sidebar-footer-link {% if nav_active == 'changelog' %}active{% endif %}">Changelog</a>
+      <div class="sidebar-version">v{{ app_version }}</div>
+    </div>
+  </aside>
+  <main class="main">
+    {% block content %}{% endblock %}
+  </main>
+</div>
+{% endblock %}
+
+<div id="toasts">
+  {% if flash %}
+  <div class="toast {{ flash_type or 'info' }}">{{ flash }}</div>
+  {% endif %}
+</div>
+
+<script defer src="/static/admin/admin.js"></script>
+</body>
+</html>

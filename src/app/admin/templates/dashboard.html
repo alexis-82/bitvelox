@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — BitVelox{% endblock %}
+{% block content %}
+<h1>Dashboard</h1>
+
+<div class="stats">
+  <div class="stat"><div class="stat-label">Artists</div><div class="stat-value">{{ counts.artists }}</div></div>
+  <div class="stat"><div class="stat-label">Albums</div><div class="stat-value">{{ counts.albums }}</div></div>
+  <div class="stat"><div class="stat-label">Tracks</div><div class="stat-value">{{ counts.tracks }}</div></div>
+  <div class="stat"><div class="stat-label">Playlists</div><div class="stat-value">{{ counts.playlists }}</div></div>
+</div>
+
+<div class="card">
+  <h2>Library scan</h2>
+  <p id="scan-status" data-running="{{ 'true' if scan.running else 'false' }}">
+    {% if scan.running %}
+      <span class="badge running">Scan in progress…</span>
+      {% if scan.started_at %} started at {{ scan.started_at.strftime('%H:%M:%S') }}{% endif %}
+    {% elif scan.finished_at %}
+      <span class="badge {% if scan.last_scan_ok %}ok{% endif %}">
+        {% if scan.last_scan_ok %}Scan completed{% else %}Scan failed{% endif %}
+      </span>
+      at {{ scan.finished_at.strftime('%H:%M:%S') }}
+      ({{ scan.total_tracks }} indexed, {{ scan.error_count }} errors)
+    {% else %}
+      <span class="badge muted">Not yet scanned</span>
+    {% endif %}
+  </p>
+  <form method="post" action="/admin/rescan" data-scan-form style="margin-top:0.75rem">
+    <button type="submit" data-scan-button {% if scan.running %}disabled{% endif %}>Scan now</button>
+  </form>
+</div>
+
+<div class="card">
+  <h2>Change admin password</h2>
+  <form method="post" action="/admin/password">
+    <div class="form-row">
+      <label for="cur">Current password</label>
+      <input id="cur" type="password" name="current" required>
+    </div>
+    <div class="form-row">
+      <label for="new">New password</label>
+      <input id="new" type="password" name="new" required>
+    </div>
+    <button type="submit">Change password</button>
+  </form>
+</div>
+
+<div class="card">
+  <h2>Scan errors ({{ errors|length }})</h2>
+  {% if errors %}
+  <table>
+    <thead><tr><th>Path</th><th>Error</th><th>When</th></tr></thead>
+    <tbody>
+      {% for e in errors %}
+      <tr>
+        <td><code>{{ e.path }}</code></td>
+        <td>{{ e.error }}</td>
+        <td>{{ e.ts.strftime('%Y-%m-%d %H:%M') }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p class="subtle">No errors on last scan.</p>
+  {% endif %}
+</div>
+{% endblock %}

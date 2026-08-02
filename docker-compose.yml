@@ -1,0 +1,20 @@
+services:
+  bitvelox:
+    build: .
+    image: bitvelox:latest
+    container_name: bitvelox
+    restart: unless-stopped
+    ports:
+      - "${HTTP_PORT:-4040}:4040"
+    environment:
+      ADMIN_USER: "${ADMIN_USER:-admin}"
+      ADMIN_PASSWORD: "${ADMIN_PASSWORD:?ADMIN_PASSWORD must be set in .env}"
+      MUSIC_DIR: /music
+      DATA_DIR: /data
+      HTTP_PORT: 4040
+    volumes:
+      - ./music:/music:ro
+      - bitvelox-data:/data
+
+volumes:
+  bitvelox-data:
