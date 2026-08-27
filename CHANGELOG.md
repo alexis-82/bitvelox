@@ -10,6 +10,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ### Added
 - In-app **Changelog** page reachable from the sidebar (bottom, above the version tag). Renders `CHANGELOG.md` from the repo root.
 
+## [0.3.1]
+
+### Fixed
+- Admin credentials (`ADMIN_USER` / `ADMIN_PASSWORD`) in `.env` are now re-synced to the database at every startup. Previously the bootstrap ran only once, so any change to `.env` after the first launch was silently ignored and the old credentials kept working.
+
 ## [0.3.0]
 
 ### Added
