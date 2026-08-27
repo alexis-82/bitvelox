@@ -33,25 +33,36 @@ def bootstrap_admin_user(
     session: Session, username: str, password: str | None
 ) -> AdminUser:
     existing = session.query(AdminUser).first()
-    if existing is not None:
-        return existing
 
-    if password is None or password == "":
-        password = _generate_random_password()
-        logger.warning(
-            "ADMIN_PASSWORD not set — generated random password: %s (save this, "
-            "it will NOT be shown again)",
-            password,
+    if existing is None:
+        if password is None or password == "":
+            password = _generate_random_password()
+            logger.warning(
+                "ADMIN_PASSWORD not set — generated random password: %s (save this, "
+                "it will NOT be shown again)",
+                password,
+            )
+        user = AdminUser(
+            username=username,
+            password_hash=hash_password(password),
+            plain_password=password,
         )
+        session.add(user)
+        session.commit()
+        return user
 
-    user = AdminUser(
-        username=username,
-        password_hash=hash_password(password),
-        plain_password=password,
-    )
-    session.add(user)
-    session.commit()
-    return user
+    changed = False
+    if existing.username != username:
+        existing.username = username
+        changed = True
+    if password and existing.plain_password != password:
+        existing.password_hash = hash_password(password)
+        existing.plain_password = password
+        changed = True
+    if changed:
+        session.commit()
+        logger.info("admin credentials synced from environment")
+    return existing
 
 
 def _decode_enc_hex(value: str) -> str | None:
