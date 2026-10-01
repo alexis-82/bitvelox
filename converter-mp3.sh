@@ -3,7 +3,7 @@
 # masquerading as MP3) into clean MP3 files with libmp3lame.
 #
 # Usage:
-#   ./fix-mp3s.sh [MUSIC_DIR]
+#   ./converter-mp3.sh [MUSIC_DIR]
 #
 # Default MUSIC_DIR is ./music (relative to current directory).
 # Files that convert successfully are replaced in-place. Files that fail
